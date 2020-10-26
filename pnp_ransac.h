@@ -73,6 +73,15 @@ public:
     /// attempts to compute the solution
     PoseD compute();
 
+    std::vector<int> const& getInliers() const
+    {
+        if (inliers.empty())
+        {
+            // return nullptr;
+        }
+        return inliers;
+    }
+
 protected:
 
 
@@ -87,7 +96,8 @@ protected:
     std::vector<cvl::Vector3D> xs;
     /// the pinhole normalized measurements corresp to xs
     std::vector<cvl::Vector2D> yns;
-
+    // inlier indices
+    std::vector<int> inliers;
     /// parmeter block
     PnpParams params;
 
