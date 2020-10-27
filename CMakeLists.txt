@@ -7,6 +7,7 @@ message("=======================================================================
 
 
 add_definitions("-std=c++11")
+set(CMAKE_CXX_FLAGS "-fPIC")
 include_directories(".")
 include_directories("lambdatwist-p3p/utils")
 
@@ -20,6 +21,12 @@ target_compile_features(libpnp PUBLIC cxx_std_11)
 add_executable(main test_pnp.cpp)
 target_link_libraries(main libpnp)
 
+install(TARGETS libpnp
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+
+install(DIRECTORY include/libpnp
+    DESTINATION include)
 
 option(WITH_PYBIND11 "with pybind11 bindings" OFF)
 if(WITH_PYBIND11)
