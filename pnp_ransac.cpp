@@ -184,6 +184,7 @@ Vector4<uint> get4RandomInRange0(uint max){
 
 
 PoseD PNP::compute(){
+    std::cout << "running compute() from pnp_ransac.cpp" << std::endl;
     double inlier_estimate=best_inliers/((double)xs.size());
     uint iters=params.get_iterations(inlier_estimate);
 
@@ -236,7 +237,7 @@ PoseD PNP::compute(){
  * since we expect a high noise, low outlier ratio solution(<50%), we should refine using a cutoff loss twice...
  */
 void PNP::refine(){
-
+    std::cout << "running compute() from pnp_ransac.cpp" << std::endl;
     std::vector<Vector3D> inlier_xs;inlier_xs.reserve(xs.size());
     std::vector<Vector2D> inlier_yns;inlier_yns.reserve(xs.size());
     std::vector<int> inliers; inliers.resize(xs.size(),0);

@@ -16,7 +16,7 @@ find_package(Ceres REQUIRED )
 add_library(libpnp utils/mlibtime.cpp pnp_ransac.cpp p4p.cpp)
 target_include_directories(libpnp PRIVATE ${CERES_INCLUDE_DIRS})
 target_link_libraries(libpnp ${CERES_LIBRARIES})
-target_compile_features(libpnp PUBLIC cxx_std_11)
+#target_compile_features(libpnp PUBLIC cxx_std_11)
 
 add_executable(main test_pnp.cpp)
 target_link_libraries(main libpnp)
