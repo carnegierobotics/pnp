@@ -178,9 +178,9 @@ Vector4<uint> get4RandomInRange0(uint max){
 }
 
 PoseD PNP::compute(){
-    double inlier_estimate=best_inliers/((double)xs.size());
-    uint iters=params.get_iterations(inlier_estimate);
-
+    double err_portion = ((double)xs.size() - best_inliers) / ((double)xs.size());
+    uint iters=params.get_iterations(params.min_probability, err_portion, 4, params.max_iterations);
+    cout << "init iters count: " << iters << endl;
     uint i;
     for(i=0;i<iters;++i){
         // pick 4 at random,
@@ -204,8 +204,8 @@ PoseD PNP::compute(){
             best_pose=pose;
 
             // recompute only when neccessary its expensive...
-            double inlier_estimate=best_inliers/((double)xs.size());
-            iters=params.get_iterations(inlier_estimate);
+            err_portion = ((double)xs.size() - best_inliers) / ((double)xs.size());
+            iters=params.get_iterations(params.min_probability, err_portion, 4, params.max_iterations);
 
             // perform early exit if exit criteria met
             if( false &&    params.early_exit &&
