@@ -39,8 +39,6 @@ uint evaluate_inlier_set(const std::vector<cvl::Vector3D>& xs,
                         uint best_inliers){
     // this is the by far slowest part of the system!
 
-
-
     uint inliers=0;
 
 
@@ -178,40 +176,27 @@ Vector4<uint> get4RandomInRange0(uint max){
 }
 
 PoseD PNP::compute(){
-    double inlier_estimate=best_inliers/((double)xs.size());
-    uint iters=params.get_iterations(inlier_estimate);
-
+    double err_portion = ((double)xs.size() - best_inliers) / ((double)xs.size());
+    uint iters=params.get_iterations(params.min_probability, err_portion, 4, params.max_iterations);
     uint i;
     for(i=0;i<iters;++i){
-        // pick 4 at random,
+        // pick 4 at random
 
         // will always succeed, returns identity on degeneracy...
         PoseD pose=p4p(xs,yns,get4RandomInRange0(xs.size()));
         assert(pose.isnormal());
         if(!pose.isnormal()) continue;
-        //cout<<pose<<endl;
 
         // evaluate inlier set
-        // timer.tic();
-
         uint inliers=evaluate_inlier_set(xs,yns,params.threshold,pose,best_inliers);
 
-        // timer.toc();
-
         if(inliers>best_inliers){
-            //std::cout<<"inliers: "<<inliers<<std::endl;
             best_inliers=inliers;
             best_pose=pose;
 
             // recompute only when neccessary its expensive...
-            double inlier_estimate=best_inliers/((double)xs.size());
-            iters=params.get_iterations(inlier_estimate);
-
-            // perform early exit if exit criteria met
-            if( false &&    params.early_exit &&
-                    i>params.early_exit_min_iterations &&
-                    best_inliers>params.early_exit_inlier_ratio*xs.size()
-                    ) break;
+            err_portion = ((double)xs.size() - best_inliers) / ((double)xs.size());
+            iters=params.get_iterations(params.min_probability, err_portion, 4, params.max_iterations);
         }
     }
 
@@ -251,7 +236,7 @@ void PNP::refine(){
         }
 
         ceres::Problem problem;
-        ceres::LossFunction* loss=nullptr;// implies squared
+        ceres::LossFunction* loss= new ceres::HuberLoss(1.0);
         problem.AddResidualBlock(PnPReprojectionError::Create(inlier_xs,inlier_yns),loss,best_pose.getRRef(),best_pose.getTRef());
 
 

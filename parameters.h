@@ -63,44 +63,28 @@ public:
     /// the minimum number of iterations to perform to ensure the required number of iterations is correctly computed
     uint min_iterations=100;
 
-
-
-
-
     /**
-     * @brief get_iterations
-     * @param estimated_inliers, start with a conservative guess, say expected_inliers/2.0
-     * @param p_inlier_given_noise_and_gt
-     * @return
-     */
-    int get_iterations(double estimated_inliers, double p_meets_treshold_given_inlier_and_gt=0.9){
+    * @brief get_iterations
+    * @param confidence probability of returning a valid result
+    * @param err_prob estimated portion of points that are outliers
+    * @param modelpoints min number of correspondances needed to construct a pose
+    * @param maxIters maximum number of iterations
+    * @return the number of iterations to run RANSAC
+    */
+    int get_iterations(double confidence, double err_prob, int modelpoints, int maxIters){
+        err_prob = std::max(err_prob, 0.);
+        err_prob = std::min(err_prob, 1.);
 
-        double p_inlier=std::min(0.9,estimated_inliers*p_meets_treshold_given_inlier_and_gt);
-        p_inlier  = std::min(std::max(p_inlier,1e-2),1-1e-8);
-        if(p_inlier<0.01) return max_iterations;
+        double num = std::max(1.0 - confidence, __DBL_MIN__);
+        double denom = 1.0 - std::pow(1.0 - err_prob, modelpoints);
+        if(denom < __DBL_MIN__){
+            return 0;
+        }
+        num = std::log(num);
+        denom = std::log(denom);
 
-        // this is the range in which the approximation is resonably valid.
-        double p_failure = std::min(std::max( 1.0-min_probability,1e-8),0.01);
-
-        // approximate P(inlier|inlier) as 1. note how this differs from P(inlier|inlier,gt)
-        double p_good=std::pow(p_inlier,4);
-        // approximate hyp as bin
-        // approximate bin as norm
-        // always draw atleast +50? yeah makes it better
-        double iterations=std::ceil((log(p_failure)/log(1.0-p_good))) +50;
-
-        // warning, small number of sample points should increase this further,
-        //since bin,norm approxes are bad, this is mostly captured by the +50 and min_iterations, which shouldnt be under 100
-
-        // p_good_given_inlier should be drop with increasing model points too, or noise aswell
-
-        if(iterations<min_iterations) return min_iterations;
-        if(iterations>max_iterations) return max_iterations;
-        return iterations;
-
-
+        return denom >= 0 || -num >= maxIters*(-denom) ? maxIters : round(num/denom);
     }
-
 
 };
 
