@@ -78,6 +78,8 @@ uint evaluate_inlier_set(const std::vector<cvl::Vector3D>& xs,
         // highest number of inliers possible at this point. inliers + (xs.size()) -i
         if(((xs.size()-i +inliers)<best_inliers)) break;
     }
+    uint min_inliers = 4;
+    inliers = std::min(min_inliers, inliers);
     return inliers;
 
 }
