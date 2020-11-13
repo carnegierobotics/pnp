@@ -30,8 +30,8 @@ namespace cvl{
 class PnpParams {
 public:
 
-double min_probability;
 double threshold;
+double min_probability;
 uint max_iterations;
 
 PnpParams(double threshold, double min_probability, uint max_iterations):
