@@ -50,7 +50,8 @@ public:
     PoseD pnp(const std::vector<cvl::Vector3D>& xs,
               const std::vector<cvl::Vector2D>& yns)
     {
-        PnpParams prs;
+        //TODO pass real params here
+        PnpParams prs(0,0,0);
         cvl::PNP est(xs,yns,prs);
 
         PoseD pose=est.compute();
