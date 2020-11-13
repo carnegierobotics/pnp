@@ -21,7 +21,7 @@ endif()
 # add warnings
 #set(WARN "-Wall -Wextra -Wpedantic -Werror")
 set(CMAKE_CXX_FLAGS_DEBUG " -fno-omit-frame-pointer -g -pg  -rdynamic ${WARN} ") # dynamic is for the improved asserts
-set(CMAKE_CXX_FLAGS_RELEASE " -O3 -march=native -DNDEBUG ${WARN} ")
+set(CMAKE_CXX_FLAGS_RELEASE " -O3 -DNDEBUG ${WARN} ")
 
 
 
