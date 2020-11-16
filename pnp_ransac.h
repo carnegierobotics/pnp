@@ -45,7 +45,7 @@ namespace cvl {
  */
 PoseD pnp_ransac(const std::vector<cvl::Vector3D>& xs,
                  const std::vector<cvl::Vector2D>& yns,
-                 PnpParams params=PnpParams());
+                 const PnpParams& params);
 
 
 /**
