@@ -6,7 +6,7 @@ message("=======================================================================
 
 
 
-add_definitions("-std=c++11")
+add_definitions("-std=c++14")
 set(CMAKE_CXX_FLAGS "-fPIC")
 include_directories(".")
 include_directories("lambdatwist-p3p/utils")
